@@ -1286,19 +1286,19 @@ async def auto_filter(client, msg, s, spoll=False):
             if settings["auto_delete"]:
                 await asyncio.sleep(DELETE_TIME)
                 await k.delete()
-                try:
-                    await message.delete()
-                except:
-                    pass
+               # try:
+                  #  await message.delete()
+               # except:
+                   # pass
     else:
         k = await s.edit_text(cap + files_link + del_msg, reply_markup=InlineKeyboardMarkup(btn), link_preview_options=LinkPreviewOptions(is_disabled=True), parse_mode=enums.ParseMode.HTML)
         if settings["auto_delete"]:
             await asyncio.sleep(DELETE_TIME)
             await k.delete()
-            try:
-                await message.delete()
-            except:
-                pass
+          #  try:
+              #  await message.delete()
+          #  except:
+           #     pass
 
 async def advantage_spell_chok(message, s):
     search = message.text
