@@ -156,7 +156,7 @@ SIX_MONTHS_STARS = int(environ.get("SIX_MONTHS_STARS", "220"))
 ONE_YEAR_STARS = int(environ.get("ONE_YEAR_STARS", "400"))
 
 # for TMDb
-TMDB_API_KEY = environ.get("TMDB_API_KEY", "")  # Get API key from here - https://www.themoviedb.org/settings/api
+TMDB_API_KEY = environ.get("TMDB_API_KEY", "4a550d8fe1ae85f11471f5766194feea")  # Get API key from here - https://www.themoviedb.org/settings/api
 if len(TMDB_API_KEY) == 0:
     logger.error('TMDB_API_KEY is missing, exiting now')
     exit()
