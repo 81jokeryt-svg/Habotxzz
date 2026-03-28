@@ -50,10 +50,10 @@ else:
     ADMINS = [int(admins) for admins in ADMINS.split()]
 
 # Channels
-INDEX_CHANNELS = [int(index_channels) if index_channels.startswith("-") else index_channels for index_channels in environ.get('INDEX_CHANNELS', '').split()]
+INDEX_CHANNELS = [int(index_channels) if index_channels.startswith("-") else index_channels for index_channels in environ.get('INDEX_CHANNELS', '-1003773266538').split()]
 if len(INDEX_CHANNELS) == 0:
     logger.info('INDEX_CHANNELS is empty')
-LOG_CHANNEL = environ.get('LOG_CHANNEL', '')
+LOG_CHANNEL = environ.get('LOG_CHANNEL', '-1003519088776')
 if len(LOG_CHANNEL) == 0:
     logger.error('LOG_CHANNEL is missing, exiting now')
     exit()
@@ -61,7 +61,7 @@ else:
     LOG_CHANNEL = int(LOG_CHANNEL)
     
 # support group
-SUPPORT_GROUP = environ.get('SUPPORT_GROUP', '')
+SUPPORT_GROUP = environ.get('SUPPORT_GROUP', '-1003219334269')
 if len(SUPPORT_GROUP) == 0:
     logger.error('SUPPORT_GROUP is missing, exiting now')
     exit()
@@ -80,18 +80,18 @@ if len(FILES_DATABASE_URL) == 0:
 SECOND_FILES_DATABASE_URL = environ.get('SECOND_FILES_DATABASE_URL', "")
 if len(SECOND_FILES_DATABASE_URL) == 0:
     logger.info('SECOND_FILES_DATABASE_URL is empty')
-DATABASE_NAME = environ.get('DATABASE_NAME', "Cluster0")
-COLLECTION_NAME = environ.get('COLLECTION_NAME', 'Files')
+DATABASE_NAME = environ.get('DATABASE_NAME', "haxxxxx")
+COLLECTION_NAME = environ.get('COLLECTION_NAME', 'hacccccxx')
 
 # Links
-SUPPORT_LINK = environ.get('SUPPORT_LINK', 'https://t.me/HA_Bots_Support')
-UPDATES_LINK = environ.get('UPDATES_LINK', 'https://t.me/HA_Bots')
-FILMS_LINK = environ.get('FILMS_LINK', 'https://t.me/HA_Films_World')
-TUTORIAL = environ.get("TUTORIAL", "https://t.me/HA_Bots")
-VERIFY_TUTORIAL = environ.get("VERIFY_TUTORIAL", "https://t.me/HA_Bots")
+SUPPORT_LINK = environ.get('SUPPORT_LINK', 'https://t.me/pratilipifm0900')
+UPDATES_LINK = environ.get('UPDATES_LINK', 'https://t.me/storyupdatechannel')
+FILMS_LINK = environ.get('FILMS_LINK', 'https://t.me/infinityaudiosearchinggroup')
+TUTORIAL = environ.get("TUTORIAL", "https://t.me/howanubhav/14")
+VERIFY_TUTORIAL = environ.get("VERIFY_TUTORIAL", "https://t.me/howanubhav/14")
 
 # Bot settings
-TIME_ZONE = environ.get('TIME_ZONE', 'Asia/Colombo') # Replace your time zone
+TIME_ZONE = environ.get('TIME_ZONE', 'Asia/Kolkata') # Replace your time zone
 DELETE_TIME = int(environ.get('DELETE_TIME', 3600)) # Add time in seconds
 CACHE_TIME = int(environ.get('CACHE_TIME', 300))
 MAX_BTN = int(environ.get('MAX_BTN', 8))
@@ -107,20 +107,20 @@ INDEX_EXTENSIONS = [extensions.lower() for extensions in environ.get('INDEX_EXTE
 PM_FILE_DELETE_TIME = int(environ.get('PM_FILE_DELETE_TIME', '3600'))
 
 # boolean settings
-USE_CAPTION_FILTER = is_enabled('USE_CAPTION_FILTER', False)
+USE_CAPTION_FILTER = is_enabled('USE_CAPTION_FILTER', True)
 IS_VERIFY = is_enabled('IS_VERIFY', False)
 AUTO_DELETE = is_enabled('AUTO_DELETE', False)
 WELCOME = is_enabled('WELCOME', False)
 PROTECT_CONTENT = is_enabled('PROTECT_CONTENT', False)
 LONG_IMDB_DESCRIPTION = is_enabled("LONG_IMDB_DESCRIPTION", False)
 LINK_MODE = is_enabled("LINK_MODE", True)
-IMDB = is_enabled('IMDB', True)
+IMDB = is_enabled('IMDB', False)
 SPELL_CHECK = is_enabled("SPELL_CHECK", True)
 SHORTLINK = is_enabled('SHORTLINK', False)
 
 # for stream
-IS_STREAM = is_enabled('IS_STREAM', True)
-BIN_CHANNEL = environ.get("BIN_CHANNEL", "")
+IS_STREAM = is_enabled('IS_STREAM', False)
+BIN_CHANNEL = environ.get("BIN_CHANNEL", "-1003745029204")
 if len(BIN_CHANNEL) == 0:
     logger.error('BIN_CHANNEL is missing, exiting now')
     exit()
