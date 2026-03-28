@@ -11,8 +11,7 @@ routes = web.RouteTableDef()
 
 @routes.get("/", allow_head=True)
 async def root_route_handler(request):
-    return web.Response(text=home_tmplt, content_type='text/html')
-
+    return web.Response(text="Bot is Alive!", content_type='text/plain')
 
 @routes.get("/watch/{message_id}")
 async def watch_handler(request):
