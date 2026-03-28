@@ -1,4 +1,4 @@
-kurigram==2.3.69
+kurigram
 flask
 tgcrypto
 pymongo
