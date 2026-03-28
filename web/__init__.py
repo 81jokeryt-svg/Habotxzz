@@ -1,8 +1,8 @@
-# Credit - adarsh-goel
+#@hdfilm0900_bot
+from flask import Flask
 
-from aiohttp import web
-from web.stream_routes import routes
+web_app = Flask(__name__)
 
-
-web_app = web.Application()
-web_app.add_routes(routes)
+@web_app.route('/')
+def health_check():
+    return "Bot is running with Flask!", 200
