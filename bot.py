@@ -1,37 +1,17 @@
 import logging
-logging.basicConfig(
-    level=logging.INFO, 
-    format='%(asctime)s - %(levelname)s - %(message)s',
-    handlers=[logging.StreamHandler()]
-)
-logging.getLogger('pyrogram').setLevel(logging.ERROR)
+logging.basicConfig(level=logging.INFO, format='%(asctime)s - %(levelname)s - %(message)s')
 logger = logging.getLogger(__name__)
 
-import os
-import time
-import asyncio
-try:
-    import uvloop
-    ul = True
-except ImportError:
-    ul = False
-    pass
-
+import os, time, asyncio, requests
+from threading import Thread
 from pyrogram import types, Client, StopPropagation
 from pyrogram.handlers import MessageHandler
-from pyrogram.errors import FloodWait
-from aiohttp import web
-from typing import Union, Optional, AsyncGenerator
 
-from web import web_app
-from info import INDEX_CHANNELS, SUPPORT_GROUP, LOG_CHANNEL, API_ID, DATA_DATABASE_URL, API_HASH, BOT_TOKEN, PORT, BIN_CHANNEL, ADMINS, SECOND_FILES_DATABASE_URL, FILES_DATABASE_URL
-from utils import temp, get_readable_time, check_premium
+# Flask import
+from web import run_server 
+from info import LOG_CHANNEL, API_ID, API_HASH, BOT_TOKEN, PORT
+from utils import temp, check_premium
 from database.users_chats_db import db
-from pymongo.mongo_client import MongoClient
-from pymongo.server_api import ServerApi
-
-if ul:
-    uvloop.install()
 
 class Bot(Client):
     def __init__(self):
@@ -46,83 +26,43 @@ class Bot(Client):
         self.add_handler(MessageHandler(self._listener_handler), group=-1)
 
     async def _listener_handler(self, client: Client, message: types.Message):
-        if not message.chat or not message.from_user:
-            return
-        
+        if not message.chat or not message.from_user: return
         listener_id = (message.chat.id, message.from_user.id)
         if listener_id in self.listeners:
             future = self.listeners[listener_id]
-            if not future.done():
-                future.set_result(message)
+            if not future.done(): future.set_result(message)
             raise StopPropagation
 
-    async def listen(self, chat_id: int, user_id: int, timeout: int = 60) -> Optional[types.Message]:
-        future = asyncio.get_event_loop().create_future()
-        listener_id = (chat_id, user_id)
-        
-        if listener_id in self.listeners:
-            old_future = self.listeners[listener_id]
-            if not old_future.done():
-                old_future.cancel()
-                
-        self.listeners[listener_id] = future
-        
-        try:
-            message = await asyncio.wait_for(future, timeout)
-            return message
-        except asyncio.TimeoutError:
-            return None
-        finally:
-            self.listeners.pop(listener_id, None)
+    # --- Self Ping (Cron Job) logic ---
+    async def keep_alive(self):
+        while True:
+            await asyncio.sleep(600) # Har 10 minute mein ping karega
+            try:
+                # Render URL ko ping karein taaki bot active rahe
+                requests.get(f"http://0.0.0.0:{PORT}")
+                logger.info("Self-ping: Keep-Alive sent!")
+            except:
+                pass
 
     async def start(self, **kwargs):
         await super().start()
         temp.START_TIME = time.time()
-        b_users, b_chats = await db.get_banned()
-        temp.BANNED_USERS = b_users
-        temp.BANNED_CHATS = b_chats
-
-        if os.path.exists('restart.txt'):
-            with open("restart.txt") as file:
-                chat_id, msg_id = map(int, file)
-            try:
-                await self.edit_message_text(chat_id=chat_id, message_id=msg_id, text='Restarted Successfully!')
-            except:
-                pass
-            os.remove('restart.txt')
-
-        temp.BOT = self
-        me = await self.get_me()
-        temp.ME = me.id
-        temp.U_NAME = me.username
-        temp.B_NAME = me.first_name
         
-        app = web.AppRunner(web_app)
-        await app.setup()
-        await web.TCPSite(app, "0.0.0.0", PORT).start()
+        # Flask Server Start (In background thread)
+        Thread(target=run_server, daemon=True).start()
+        
+        # Self Ping Start
+        asyncio.create_task(self.keep_alive())
 
+        me = await self.get_me()
+        temp.ME, temp.U_NAME = me.id, me.username
+        
         asyncio.create_task(check_premium(self))
         try:
-            await self.send_message(chat_id=LOG_CHANNEL, text=f"<b>{me.mention} Restarted! 🤖</b>")
+            await self.send_message(chat_id=LOG_CHANNEL, text=f"<b>{me.mention} Started with Flask!</b>")
         except:
-            logger.error("Make sure bot admin in LOG_CHANNEL, exiting now")
-            exit()
-        logger.info(f"@{me.username} is started now ✓")
-
-    async def stop(self, **kwargs):
-        await super().stop()
-        logger.info("Bot Stopped! Bye...")
-
-    async def iter_messages(self: Client, chat_id: Union[int, str], limit: int, offset: int = 0) -> Optional[AsyncGenerator[types.Message, None]]:
-        current = offset
-        while True:
-            new_diff = min(200, limit - current)
-            if new_diff <= 0:
-                return
-            messages = await self.get_messages(chat_id, list(range(current, current+new_diff+1)))
-            for message in messages:
-                yield message
-                current += 1
+            pass
+        logger.info(f"@{me.username} is running on Port {PORT}")
 
 app = Bot()
 app.run()
