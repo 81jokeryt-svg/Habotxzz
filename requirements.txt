@@ -1,4 +1,5 @@
-kurigram
+kurigram==2.3.69
+flask
 tgcrypto
 pymongo
 shortzy
